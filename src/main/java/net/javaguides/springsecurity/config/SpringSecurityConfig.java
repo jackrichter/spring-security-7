@@ -1,10 +1,9 @@
 package net.javaguides.springsecurity.config;
 
-import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@EnableMethodSecurity
 public class SpringSecurityConfig {
 
     @Bean
@@ -25,10 +25,14 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers(HttpMethod.GET, "/user", "/admin").authenticated()
-                .requestMatchers(HttpMethod.GET, "/welcome").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/user", "/admin").authenticated()
+//                .requestMatchers(HttpMethod.GET, "/welcome").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/user").hasAnyRole("USER", "ADMIN")
+//                        .requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/welcome").permitAll()
+                        .anyRequest().authenticated()
         );
 //                .anyRequest()
 //                .denyAll());
