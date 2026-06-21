@@ -1,5 +1,6 @@
 package net.javaguides.springsecurity.config;
 
+import net.javaguides.springsecurity.exception.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -53,10 +54,17 @@ public class SpringSecurityConfig {
 //                .denyAll());
 //                .permitAll());
 
+        // Defaults
 //        http.formLogin(withDefaults());
         http.formLogin(formLogin -> formLogin.disable());
-        http.httpBasic(withDefaults());
+//        http.httpBasic(withDefaults());
 //        http.httpBasic(httpBasic -> httpBasic.disable());
+
+        // For custom authentication exception handling
+        http.httpBasic(basicAuth -> basicAuth
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+
+
         return http.build();
     }
 
