@@ -1,5 +1,6 @@
 package net.javaguides.springsecurity.config;
 
+import net.javaguides.springsecurity.exception.CustomAccessDeniedHandler;
 import net.javaguides.springsecurity.exception.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,6 +65,9 @@ public class SpringSecurityConfig {
         http.httpBasic(basicAuth -> basicAuth
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
+        // For custom access denied exception handling
+        http.exceptionHandling(ex -> ex
+                .accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
     }
