@@ -49,6 +49,7 @@ public class SpringSecurityConfig {
 //                        .requestMatchers(HttpMethod.GET, "/user").hasAnyRole("USER", "ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/welcome").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                         .anyRequest().authenticated()
         );
 //                .anyRequest()
@@ -68,6 +69,8 @@ public class SpringSecurityConfig {
         // For custom access denied exception handling
         http.exceptionHandling(ex -> ex
                 .accessDeniedHandler(new CustomAccessDeniedHandler()));
+
+        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }
