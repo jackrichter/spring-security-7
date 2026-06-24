@@ -3,9 +3,11 @@ package net.javaguides.springsecurity.service.impl;
 import net.javaguides.springsecurity.dto.RegisterDto;
 import net.javaguides.springsecurity.entity.Role;
 import net.javaguides.springsecurity.entity.User;
+import net.javaguides.springsecurity.exception.EmailAlreadyExistsException;
 import net.javaguides.springsecurity.repository.RoleRepository;
 import net.javaguides.springsecurity.repository.UserRepository;
 import net.javaguides.springsecurity.service.AuthService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String register(RegisterDto registerDto) {
+    public String register(RegisterDto registerDto) {       // <=> Sign in
+
+        if (userRepository.existsByUsername(registerDto.getUsername())) {
+            throw new UsernameNotFoundException("Username is already taken!");
+        }
+
+        if (userRepository.existsByEmail(registerDto.getEmail())) {
+            throw new EmailAlreadyExistsException("Email is already in use!");
+        }
 
         User user = new User();
         user.setName(registerDto.getName());
@@ -38,8 +48,9 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));    // Obs! Password must be encrypted for security to work!
 
         Set<Role> roles = new HashSet<>();
-        Role role = roleRepository.findByName("ROLE_USER");
-        roles.add(role);
+        for (String roleName : registerDto.getRoles()) {
+            roles.add(roleRepository.findByName(roleName));
+        }
         user.setRoles(roles);
 
         userRepository.save(user);
