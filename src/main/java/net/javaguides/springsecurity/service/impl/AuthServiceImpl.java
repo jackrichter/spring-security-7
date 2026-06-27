@@ -1,5 +1,6 @@
 package net.javaguides.springsecurity.service.impl;
 
+import net.javaguides.springsecurity.dto.LoginDto;
 import net.javaguides.springsecurity.dto.RegisterDto;
 import net.javaguides.springsecurity.entity.Role;
 import net.javaguides.springsecurity.entity.User;
@@ -7,6 +8,10 @@ import net.javaguides.springsecurity.exception.EmailAlreadyExistsException;
 import net.javaguides.springsecurity.repository.RoleRepository;
 import net.javaguides.springsecurity.repository.UserRepository;
 import net.javaguides.springsecurity.service.AuthService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,14 +25,17 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;        // From Spring Security Framework
+    private AuthenticationManager authenticationManager;
 
 //    @Autowired
     public AuthServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -56,5 +64,18 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return "User Registered Successfully!";
+    }
+
+    @Override
+    public String login(LoginDto loginDto) {
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getUsernameOrEmail(), loginDto.getPassword())
+        );
+
+        // The authentication object has to be set in the 'Security Context'
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "User has logged-in successfully";    // Ideally, we should return a JWT token here!!!
     }
 }

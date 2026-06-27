@@ -1,5 +1,6 @@
 package net.javaguides.springsecurity.controller;
 
+import net.javaguides.springsecurity.dto.LoginDto;
 import net.javaguides.springsecurity.dto.RegisterDto;
 import net.javaguides.springsecurity.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -25,5 +26,12 @@ public class AuthController {
         String message = authService.register(registerDto);
 
         return new ResponseEntity<>(message, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+        String message = authService.login(loginDto);
+
+        return ResponseEntity.ok(message);
     }
 }
