@@ -2,6 +2,7 @@ package net.javaguides.springsecurity.config;
 
 import net.javaguides.springsecurity.exception.CustomAccessDeniedHandler;
 import net.javaguides.springsecurity.exception.CustomAuthenticationEntryPoint;
+import net.javaguides.springsecurity.security.JwtAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -62,9 +63,13 @@ public class SpringSecurityConfig {
 //        http.httpBasic(withDefaults());
 //        http.httpBasic(httpBasic -> httpBasic.disable());
 
-        // For custom authentication exception handling
+        // For custom Basic Authentication Exception handling
+//        http.httpBasic(basicAuth -> basicAuth
+//                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+
+        // For custom JWT Authentication Exception handling
         http.httpBasic(basicAuth -> basicAuth
-                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
         // For custom access denied exception handling
         http.exceptionHandling(ex -> ex

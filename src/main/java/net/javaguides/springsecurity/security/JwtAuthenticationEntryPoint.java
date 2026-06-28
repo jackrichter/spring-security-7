@@ -1,8 +1,9 @@
-package net.javaguides.springsecurity.exception;
+package net.javaguides.springsecurity.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.javaguides.springsecurity.exception.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -12,9 +13,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
- * Handles exceptions thrown by Spring Security Basic Authentication
+ * Handles authentication exceptions for JWT
  */
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request,
