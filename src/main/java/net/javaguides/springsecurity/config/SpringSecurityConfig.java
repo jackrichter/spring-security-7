@@ -3,6 +3,7 @@ package net.javaguides.springsecurity.config;
 import net.javaguides.springsecurity.exception.CustomAccessDeniedHandler;
 import net.javaguides.springsecurity.exception.CustomAuthenticationEntryPoint;
 import net.javaguides.springsecurity.security.JwtAuthenticationEntryPoint;
+import net.javaguides.springsecurity.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -25,10 +27,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SpringSecurityConfig {
 
     // For Database Authentication
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter authenticationFilter;
 
-    public SpringSecurityConfig(UserDetailsService userDetailsService) {
+    public SpringSecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter authenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.authenticationFilter = authenticationFilter;
     }
 
     @Bean
@@ -66,6 +70,9 @@ public class SpringSecurityConfig {
         // For custom Basic Authentication Exception handling
 //        http.httpBasic(basicAuth -> basicAuth
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+
+        // Tell Spring Security to use JwtAuthenticationFilter before any other filter (typically before the UsernamePasswordAuthenticationFilter)
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         // For custom JWT Authentication Exception handling
         http.httpBasic(basicAuth -> basicAuth

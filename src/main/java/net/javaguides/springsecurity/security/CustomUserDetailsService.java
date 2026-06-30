@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Used for Database Authentication
+ * Used for Database Authentication. The bridge between the application's User and Spring Security
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,6 +25,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Gets a Spring Security representation of the User stored in db
+     * @param usernameOrEmail the username identifying the user whose data is required.
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
