@@ -63,7 +63,7 @@ public class SpringSecurityConfig {
 
         // Defaults
 //        http.formLogin(withDefaults());
-        http.formLogin(formLogin -> formLogin.disable());
+        http.formLogin(form -> form.disable());
 //        http.httpBasic(withDefaults());
 //        http.httpBasic(httpBasic -> httpBasic.disable());
 
@@ -71,12 +71,12 @@ public class SpringSecurityConfig {
 //        http.httpBasic(basicAuth -> basicAuth
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
-        // Tell Spring Security to use JwtAuthenticationFilter before any other filter (typically before the UsernamePasswordAuthenticationFilter)
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         // For custom JWT Authentication Exception handling
         http.httpBasic(basicAuth -> basicAuth
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+
+        // Tell Spring Security to use JwtAuthenticationFilter before any other filter (typically before the UsernamePasswordAuthenticationFilter)
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         // For custom access denied exception handling
         http.exceptionHandling(ex -> ex

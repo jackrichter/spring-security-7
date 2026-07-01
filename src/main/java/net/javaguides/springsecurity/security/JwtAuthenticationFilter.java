@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // the form is: bearer <token> (JWT)
         String bearerToken = request.getHeader("Authorization");    // Specific for JWT
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
 

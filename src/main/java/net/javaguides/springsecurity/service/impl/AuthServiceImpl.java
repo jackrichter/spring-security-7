@@ -7,6 +7,7 @@ import net.javaguides.springsecurity.entity.User;
 import net.javaguides.springsecurity.exception.EmailAlreadyExistsException;
 import net.javaguides.springsecurity.repository.RoleRepository;
 import net.javaguides.springsecurity.repository.UserRepository;
+import net.javaguides.springsecurity.security.JwtTokenProvider;
 import net.javaguides.springsecurity.service.AuthService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,15 +28,19 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder passwordEncoder;        // From Spring Security Framework
     private AuthenticationManager authenticationManager;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
 //    @Autowired
     public AuthServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager) {
+                           AuthenticationManager authenticationManager,
+                           JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -66,6 +71,11 @@ public class AuthServiceImpl implements AuthService {
         return "User Registered Successfully!";
     }
 
+    /**
+     * Provides the client with a JWT token to be used for authentication
+     * @param loginDto
+     * @return
+     */
     @Override
     public String login(LoginDto loginDto) {
 
@@ -76,6 +86,11 @@ public class AuthServiceImpl implements AuthService {
         // The authentication object has to be set in the 'Security Context'
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "User has logged-in successfully";    // Ideally, we should return a JWT token here!!!
+        // Generate JWT token to be returned to the client
+        String jwtToken = jwtTokenProvider.generateToken(authentication);
+
+        return jwtToken;
+
+//        return "User has logged in successfully"; // Ideally, we should return a JWT token here!!!
     }
 }

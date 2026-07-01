@@ -1,5 +1,6 @@
 package net.javaguides.springsecurity.controller;
 
+import net.javaguides.springsecurity.dto.JwtAuthResponseDto;
 import net.javaguides.springsecurity.dto.LoginDto;
 import net.javaguides.springsecurity.dto.RegisterDto;
 import net.javaguides.springsecurity.service.AuthService;
@@ -29,9 +30,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        String message = authService.login(loginDto);
+    public ResponseEntity<JwtAuthResponseDto> login(@RequestBody LoginDto loginDto) {
+        String jwtToken = authService.login(loginDto);
+        JwtAuthResponseDto responseDto = new JwtAuthResponseDto(jwtToken);
 
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(responseDto);
     }
 }
